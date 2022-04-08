@@ -5,13 +5,23 @@ from csv import writer
 import pandas as pd
 from pandas_profiling import ProfileReport
 
+#sample urls : https://www.goodreads.com/list/show/2997.Books_You_Would_Recommend_to_Strangers
+# https://www.goodreads.com/list/show/2997.Books_You_Would_Recommend_to_Strangers?page=2
+# https://www.goodreads.com/list/show/2398.The_Best_of_the_Best
+
 url=input("Enter a goodreads list url \n >>")
 page=requests.get(url)
 
 soup= BeautifulSoup(page.content, 'html.parser')
 lists=soup.find_all('tr')
 
-with open('goodreadsList.csv', 'w', encoding='utf8', newline='') as f:
+dataName=input("Save Database As: \n >>")
+dataNameOutput=dataName+".csv"
+
+outputName=input("Save Report As: \n >>")
+outputNameHtml=outputName+".html"
+
+with open(dataNameOutput, 'w', encoding='utf8', newline='') as f:
     thewriter=writer(f)
     heading=["Rank", "Name", "Author", "Rating"]
     thewriter.writerow(heading)
@@ -29,7 +39,7 @@ with open('goodreadsList.csv', 'w', encoding='utf8', newline='') as f:
         print(data)
         thewriter.writerow(data)
 
-df=pd.read_csv("goodreadsList.csv")
+df=pd.read_csv(dataNameOutput)
 
 profile=ProfileReport(df)
-profile.to_file(output_file="GoodreadsListReport.html")
+profile.to_file(output_file=outputNameHtml)
