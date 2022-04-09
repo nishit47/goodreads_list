@@ -9,7 +9,9 @@ from pandas_profiling import ProfileReport
 # https://www.goodreads.com/list/show/2997.Books_You_Would_Recommend_to_Strangers?page=2
 # https://www.goodreads.com/list/show/2398.The_Best_of_the_Best
 
-url=input("Enter a goodreads list url \n >>")
+url=input("Enter a goodreads list url: (make sure to put url of first page of the list)\n >>")
+page=requests.get(url)
+soup= BeautifulSoup(page.content, 'html.parser')
 
 dataName=input("Save Database As: \n >>")
 dataNameOutput=dataName+".csv"
@@ -17,12 +19,22 @@ dataNameOutput=dataName+".csv"
 outputName=input("Save Report As: \n >>")
 outputNameHtml=outputName+".html"
 
+numberString=soup.find('div',class_="stacked").text.strip()[:8].replace(",","")
+
+numberOfBooks=""
+for digit in numberString:
+    if digit.isdigit():
+        numberOfBooks=numberOfBooks+str(digit)
+
+numberOfPages=(int(numberOfBooks)//100)+1
+loopNumber=numberOfPages+2
+
 with open(dataNameOutput, 'w', encoding='utf8', newline='') as f:
     thewriter=writer(f)
     heading=["Rank", "Name", "Author", "Rating"]
     thewriter.writerow(heading)
 
-    for pageNumber in range(2,8):
+    for pageNumber in range(2,loopNumber):
 
         page=requests.get(url)
         soup= BeautifulSoup(page.content, 'html.parser')
