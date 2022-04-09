@@ -1,1 +1,1 @@
-https://www.goodreads.com/list/show/2997.Books_You_Would_Recommend_to_Strangers?page=2
+https://www.goodreads.com/list/show/2398.The_Best_of_the_Best
