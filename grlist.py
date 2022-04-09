@@ -10,10 +10,6 @@ from pandas_profiling import ProfileReport
 # https://www.goodreads.com/list/show/2398.The_Best_of_the_Best
 
 url=input("Enter a goodreads list url \n >>")
-page=requests.get(url)
-
-soup= BeautifulSoup(page.content, 'html.parser')
-lists=soup.find_all('tr')
 
 dataName=input("Save Database As: \n >>")
 dataNameOutput=dataName+".csv"
@@ -26,18 +22,30 @@ with open(dataNameOutput, 'w', encoding='utf8', newline='') as f:
     heading=["Rank", "Name", "Author", "Rating"]
     thewriter.writerow(heading)
 
-    for list in lists:
-        ranking=list.find('td', class_="number").text
-        title=list.find('a', class_="bookTitle").span.text
-        author=list.find('a', class_="authorName").span.text
-        ratingString=(list.find('span', class_="minirating").text[1:5])
-        try:
-            rating=float(ratingString)
-        except:
-            rating=0
-        data=[ranking, title, author,rating]
-        print(data)
-        thewriter.writerow(data)
+    for pageNumber in range(2,8):
+
+        page=requests.get(url)
+        soup= BeautifulSoup(page.content, 'html.parser')
+        lists=soup.find_all('tr')
+
+        for list in lists:
+            ranking=list.find('td', class_="number").text
+            title=list.find('a', class_="bookTitle").span.text
+            author=list.find('a', class_="authorName").span.text
+            ratingString=(list.find('span', class_="minirating").text[1:5])
+            try:
+                rating=float(ratingString)
+            except:
+                rating=0
+            data=[ranking, title, author,rating]
+            print(data)
+            thewriter.writerow(data)
+
+        #going to the next page number
+        if pageNumber==2:
+            url=url+"?page="+str(pageNumber)
+        else:
+            url=url[:-1]+str(pageNumber)
 
 
 df=pd.read_csv(dataNameOutput)
