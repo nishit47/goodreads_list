@@ -34,10 +34,11 @@ with open(dataNameOutput, 'w', encoding='utf8', newline='') as f:
         try:
             rating=float(ratingString)
         except:
-            rating=4
+            rating=0
         data=[ranking, title, author,rating]
         print(data)
         thewriter.writerow(data)
+
 
 df=pd.read_csv(dataNameOutput)
 
