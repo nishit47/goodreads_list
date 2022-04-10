@@ -6,7 +6,6 @@ import pandas as pd
 from pandas_profiling import ProfileReport
 
 #sample urls : https://www.goodreads.com/list/show/2997.Books_You_Would_Recommend_to_Strangers
-# https://www.goodreads.com/list/show/2997.Books_You_Would_Recommend_to_Strangers?page=2
 # https://www.goodreads.com/list/show/2398.The_Best_of_the_Best
 
 url=input("Enter a goodreads list url: (make sure to put url of first page of the list)\n >>")
@@ -19,12 +18,12 @@ dataNameOutput=dataName+".csv"
 outputName=input("Save Report As: \n >>")
 outputNameHtml=outputName+".html"
 
-numberString=soup.find('div',class_="stacked").text.strip()[:8].replace(",","")
+numberOfBooksString=soup.find('div',class_="stacked").text.strip()[:8].replace(",","")
 
 numberOfBooks=""
-for digit in numberString:
-    if digit.isdigit():
-        numberOfBooks=numberOfBooks+str(digit)
+for character in numberOfBooksString:
+    if character.isdigit():
+        numberOfBooks=numberOfBooks+str(character)
 
 numberOfPages=(int(numberOfBooks)//100)+1
 loopNumber=numberOfPages+2
