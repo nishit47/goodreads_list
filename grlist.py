@@ -27,7 +27,6 @@ for character in numberOfBooksString:
 
 numberOfPages=(int(numberOfBooks)//100)+1
 loopNumber=numberOfPages+2
-print(loopNumber)
 
 with open(dataNameOutput, 'w', encoding='utf8', newline='') as f:
     thewriter=writer(f)
