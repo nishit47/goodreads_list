@@ -59,7 +59,7 @@ with open(dataNameOutput, 'w', encoding='utf8', newline='') as f:
         elif pageNumber>10 and pageNumber<101:
             url=url[:-2]+str(pageNumber)
         else:
-            break # because goodreads only has 10000 viewable books on a list
+            break #because goodreads only has 10000 viewable books on a list
 
 df=pd.read_csv(dataNameOutput)
 
