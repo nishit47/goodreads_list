@@ -16,7 +16,7 @@ wantReport=(input("Do you want an analysis report? (Y/N) \n >>")).upper()
 dataName=input("Save Database As: \n >>")
 dataNameOutput=dataName+".csv"
 
-if wantReport=="Y":
+if wantReport == "Y":
     outputName=input("Save Report As: \n >>")
     outputNameHtml=outputName+".html"
 
@@ -32,7 +32,7 @@ loopNumber=numberOfPages+2
 
 with open(dataNameOutput, 'w', encoding='utf8', newline='') as f:
     thewriter=writer(f)
-    heading=["Rank", "Name", "Author", "Rating", "Number Of Ratings"]
+    heading=["Rank", "Name", "Author", "Average Rating", "Number Of Ratings"]
     thewriter.writerow(heading)
 
     for pageNumber in range(2,loopNumber): #pageNumber=1+actualPageNumber because url changes after the inner loop
@@ -68,8 +68,25 @@ with open(dataNameOutput, 'w', encoding='utf8', newline='') as f:
         else:
             break #because goodreads only has 10000 viewable books on a list
 
-if wantReport=="Y":
-    df=pd.read_csv(dataNameOutput)
+print((" \n The data has been succesfully exported as "+dataNameOutput+"\n").upper())
 
+if wantReport == "Y" :
+    df=pd.read_csv(dataNameOutput)
     profile=ProfileReport(df)
     profile.to_file(output_file=outputNameHtml)
+
+wantFiltered=input("Do you want a filtered recommendation with high ratings from 15000+ reviewers? (y/n)\n").upper()
+
+if wantFiltered=="Y":
+    df=pd.read_csv(dataNameOutput)
+    fourPlus=(df["Average Rating"]>=4)
+    rated=df[fourPlus]
+    print(rated)
+    fifteen=(df["Number Of Ratings"]>15000)
+    verified=df[fifteen]
+    print(verified)
+    optimized=verified[fourPlus]
+    print(optimized)
+    optimized.to_csv(dataName+"Filtered.csv")
+
+    print((" \n The filtered data has been succesfully exported as "+dataName+"Filtered.csv\n").upper())
