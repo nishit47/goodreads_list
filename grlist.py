@@ -11,12 +11,14 @@ from pandas_profiling import ProfileReport
 url=input("Enter a goodreads list url: (make sure to put url of first page of the list)\n >>")
 page=requests.get(url)
 soup= BeautifulSoup(page.content, 'html.parser')
+wantReport=(input("Do you want an analysis report? (Y/N) \n >>")).upper()
 
 dataName=input("Save Database As: \n >>")
 dataNameOutput=dataName+".csv"
 
-outputName=input("Save Report As: \n >>")
-outputNameHtml=outputName+".html"
+if wantReport=="Y":
+    outputName=input("Save Report As: \n >>")
+    outputNameHtml=outputName+".html"
 
 numberOfBooksString=soup.find('div',class_="stacked").text.strip()[:8].replace(",","")
 
@@ -30,7 +32,7 @@ loopNumber=numberOfPages+2
 
 with open(dataNameOutput, 'w', encoding='utf8', newline='') as f:
     thewriter=writer(f)
-    heading=["Rank", "Name", "Author", "Rating"]
+    heading=["Rank", "Name", "Author", "Rating", "Number Of Ratings"]
     thewriter.writerow(heading)
 
     for pageNumber in range(2,loopNumber): #pageNumber=1+actualPageNumber because url changes after the inner loop
@@ -47,7 +49,12 @@ with open(dataNameOutput, 'w', encoding='utf8', newline='') as f:
                 rating=float(ratingString)
             except:
                 rating=0
-            data=[ranking, title, author,rating]
+            numberOfRatingsString=list.find('span', class_="minirating").text.strip()[12:].replace(",","")
+            numberOfRatings=""
+            for character in numberOfRatingsString:
+                if character.isdigit():
+                    numberOfRatings=numberOfRatings+str(character)
+            data=[ranking, title, author,rating, numberOfRatings]
             print(data)
             thewriter.writerow(data)
 
@@ -61,7 +68,8 @@ with open(dataNameOutput, 'w', encoding='utf8', newline='') as f:
         else:
             break #because goodreads only has 10000 viewable books on a list
 
-df=pd.read_csv(dataNameOutput)
+if wantReport=="Y":
+    df=pd.read_csv(dataNameOutput)
 
-profile=ProfileReport(df)
-profile.to_file(output_file=outputNameHtml)
+    profile=ProfileReport(df)
+    profile.to_file(output_file=outputNameHtml)
